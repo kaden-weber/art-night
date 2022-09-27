@@ -16,17 +16,35 @@ class Curve {
         this.amplitude = amplitude;
     }
 }
+class Colors {
+    constructor() {
+        this.color1 = "#B8602E";
+        this.color2 = "#d6632c";
+        this.used1Last = false;
+    }
+    getColor() {
+        if (this.used1Last) {
+            this.used1Last = false;
+            return this.color2;
+        }
+        else {
+            this.used1Last = true;
+            return this.color1;
+        }
+    }
+}
 class Artist {
     constructor() {
         this.canvas = document.getElementById("sines");
         let context = this.canvas.getContext("2d");
         this.context = context;
+        this.colorPicker = new Colors();
         this.start();
     }
     drawSine(x) {
         // draw sin curve point to point until x
         this.context.beginPath(); // Draw a new path
-        this.context.strokeStyle = "black"; // Pick a color
+        this.context.lineWidth = 2.4;
         for (var i = 0; i < x; i++) {
             // Loop from left side to current x
             var y = calcSineY(i, this.currentCurve.amplitude, this.currentCurve.frequency, this.canvas.width, this.canvas.height); // Calculate y value from x
@@ -47,6 +65,7 @@ class Artist {
         }
         else {
             this.lineCount++;
+            this.context.strokeStyle = this.colorPicker.getColor();
             this.currentCurve.amplitude = randInt(this.drawHeight / 2, this.drawHeight);
             this.currentCurve.frequency = randInt(10, 90) / 10;
         }
@@ -76,6 +95,7 @@ class Artist {
         this.lineCount = 0;
         this.drawHeight = this.canvas.height / 4;
         this.currentCurve = new Curve(1, this.drawHeight);
+        this.context.strokeStyle = this.colorPicker.getColor();
         // Start time interval
         setInterval(() => this.animation(), 1); // Loop every 5 milliseconds
     }
