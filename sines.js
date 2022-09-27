@@ -1,6 +1,8 @@
 // radians = (Math.PI / 180) * degrees;
 
 var c = document.getElementById("sines"); // Grab canvas object
+c.width = window.innerWidth;
+c.height = window.innerHeight;
 var ctx = c.getContext("2d"); // Define canvas context
 var w = c.width; // Canvas width => Frequency is relative to this
 var h = c.height / 2; // Canvas height over two => Amplitude: Volume
