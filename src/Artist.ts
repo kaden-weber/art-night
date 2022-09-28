@@ -52,13 +52,15 @@ class Artist {
     private lineCount: number
     private currentCurve: Curve
     private colorPicker: Colors
+    private currentInterval: number
 
     constructor() {
         this.canvas = document.getElementById("sines") as HTMLCanvasElement
         let context = this.canvas.getContext("2d")
         this.context = context
+        addEventListener('resize', (event) => { this.checkWindowSize() })
         this.colorPicker = new Colors()
-        this.start()
+        this.checkWindowSize()
     }
 
     private drawSine(x: number) {
@@ -80,6 +82,8 @@ class Artist {
     private checkWindowSize() {
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
+        this.drawHeight = this.canvas.height / 4
+        this.start()
     }
 
     private determineNextBehavior() {
@@ -89,7 +93,7 @@ class Artist {
             this.lineCount++
             this.context.strokeStyle = this.colorPicker.getColor()
             this.currentCurve.amplitude = randInt(this.drawHeight / 2, this.drawHeight)
-            this.currentCurve.frequency = randInt(10, 90) / 10
+            this.currentCurve.frequency = randInt(10, 80) / 10
         }
 
         if (this.lineCount == 2) {
@@ -113,19 +117,21 @@ class Artist {
     }
 
     private start() {
-        this.checkWindowSize()
+        // do stateful setup here 
 
         // Define initial value of x position (leftmost side of canvas)
         this.x = 0
         this.erasing = false
         this.lineCount = 0
-        this.drawHeight = this.canvas.height / 4
 
         this.currentCurve = new Curve(1, this.drawHeight)
         this.context.strokeStyle = this.colorPicker.getColor()
 
         // Start time interval
-        setInterval(() => this.animation(), 1) // Loop every 5 milliseconds
+        if (this.currentInterval !== null) {
+            clearInterval(this.currentInterval)
+        }
+        this.currentInterval = setInterval(() => this.animation(), 1) // Loop every 5 milliseconds
     }
 }
 

@@ -38,8 +38,9 @@ class Artist {
         this.canvas = document.getElementById("sines");
         let context = this.canvas.getContext("2d");
         this.context = context;
+        addEventListener('resize', (event) => { this.checkWindowSize(); });
         this.colorPicker = new Colors();
-        this.start();
+        this.checkWindowSize();
     }
     drawSine(x) {
         // draw sin curve point to point until x
@@ -58,6 +59,8 @@ class Artist {
     checkWindowSize() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+        this.drawHeight = this.canvas.height / 4;
+        this.start();
     }
     determineNextBehavior() {
         if (this.erasing) {
@@ -67,7 +70,7 @@ class Artist {
             this.lineCount++;
             this.context.strokeStyle = this.colorPicker.getColor();
             this.currentCurve.amplitude = randInt(this.drawHeight / 2, this.drawHeight);
-            this.currentCurve.frequency = randInt(10, 90) / 10;
+            this.currentCurve.frequency = randInt(10, 80) / 10;
         }
         if (this.lineCount == 2) {
             this.erasing = true;
@@ -88,16 +91,18 @@ class Artist {
         }
     }
     start() {
-        this.checkWindowSize();
+        // do stateful setup here 
         // Define initial value of x position (leftmost side of canvas)
         this.x = 0;
         this.erasing = false;
         this.lineCount = 0;
-        this.drawHeight = this.canvas.height / 4;
         this.currentCurve = new Curve(1, this.drawHeight);
         this.context.strokeStyle = this.colorPicker.getColor();
         // Start time interval
-        setInterval(() => this.animation(), 1); // Loop every 5 milliseconds
+        if (this.currentInterval !== null) {
+            clearInterval(this.currentInterval);
+        }
+        this.currentInterval = setInterval(() => this.animation(), 1); // Loop every 5 milliseconds
     }
 }
 new Artist();
